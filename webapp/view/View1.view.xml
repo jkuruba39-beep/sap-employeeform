@@ -1,0 +1,53 @@
+<mvc:View 
+   controllerName="antric.info.employeeform.controller.View1"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m">
+    <Page id="page" title="Employee details">
+         <OverflowToolbar id="fbar1">
+                        <ToolbarSpacer id="toba" />
+                         <SearchField
+                            id="se1"
+                            width="50%"
+                            class="rightAlignSearchField"               
+                            placeholder="Product id/ name"
+                            search="onSearch"
+                            />   
+                        <Button id="b1" icon= "sap-icon://detail-view" press="onOpenVieweDialog" />
+                        <Button id="b2" icon= "sap-icon://add" press="onCreateProduct" />
+                        <Button id="b3" icon= "sap-icon://edit" press="onOpenUpdateDialog" />
+                        <Button id="b4" icon= "sap-icon://delete" press="onDeleteProduct" />
+                    </OverflowToolbar>
+      <Table 
+     items="{/Products}"
+       id="idList"
+      mode="SingleSelectMaster"
+      selectionChange="onSelectionChange"
+      
+        >
+         <columns> 
+              <Column><Text text="Id"  /></Column>
+              <Column><Text text="ProductName"  /></Column>
+              <Column><Text text="Description"  /></Column>
+              <Column><Text text="Released date"  /></Column>
+              <Column><Text text="Discontinued date"  /></Column>
+              <Column><Text text="Price"  /></Column>
+             <Column><Text text="Rating"  /></Column>
+         </columns>
+         <items>
+            <ColumnListItem >
+            <cells>
+           
+            <Text text="{ID}"/>
+             <Text text="{Name}"/>
+              <Text text="{Description}"/>
+               <Text text="{ReleaseDate}"/>
+                <Text text="{DiscontinuedDate}"/>
+                <Text text="{Rating}"  />
+                <Text text="{Price}"  />
+                </cells>
+
+            </ColumnListItem>
+         </items>
+      </Table>
+    </Page>
+</mvc:View>
