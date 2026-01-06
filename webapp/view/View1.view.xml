@@ -18,7 +18,7 @@
                         <Button id="b4" icon= "sap-icon://delete" press="onDeleteProduct" />
                     </OverflowToolbar>
       <Table 
-     items="{/Products}"
+     items="{product>/Product}"
        id="idList"
       mode="SingleSelectMaster"
       selectionChange="onSelectionChange"
@@ -37,13 +37,13 @@
             <ColumnListItem >
             <cells>
            
-            <Text text="{ID}"/>
-             <Text text="{Name}"/>
-              <Text text="{Description}"/>
-               <Text text="{ReleaseDate}"/>
-                <Text text="{DiscontinuedDate}"/>
-                <Text text="{Rating}"  />
-                <Text text="{Price}"  />
+            <Text text="{product>ID}"/>
+             <Text text="{product>Name}"/>
+              <Text text="{product>Description}"/>
+               <Text text="{product>ReleaseDate}"/>
+                <Text text="{product>DiscontinuedDate}"/>
+                <Text text="{product>Rating}"  />
+                <Text text="{product>Price}"  />
                 </cells>
 
             </ColumnListItem>
