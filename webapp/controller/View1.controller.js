@@ -92,6 +92,7 @@ sap.ui.define([
             };
              aProducts.push(oNewProduct);
             oModel.setProperty('/Product',aProducts);
+			    this._oCreateDialog.close();
 
             // oModel.create("/Products", oNewProduct, {
             //     success: function () {
@@ -147,6 +148,7 @@ sap.ui.define([
             var oModel = this.getView().getModel('product');
 
             var oUpdatedData = {
+				 ID: this.byId("updProdIdInput").getValue(),
                 Name: this.byId("updNameInput").getValue(),
                 Description: this.byId("updDescInput").getValue(),
                 ReleaseDate: this.byId("updReleaseDateInput").getDateValue(),
