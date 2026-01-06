@@ -10,23 +10,16 @@ sap.ui.define([
     return Controller.extend("antric.info.employeeform.controller.View1", {
 
         onInit: function () {},
-
-        /* ===============================
-           Selection
-        =============================== */
         onSelectionChange: function (oEvent) {
             var oSelectedItem = oEvent.getParameter("listItem");
             if (!oSelectedItem) {
                 return;
             }
 
-            var oContext = oSelectedItem.getBindingContext();
+            var oContext = oSelectedItem.getBindingContext('product');
             this._selectedPath = oContext.getPath(); // /Products(1)
         },
 
-        /* ===============================
-           DELETE
-        =============================== */
         onDeleteProduct: function () {
             if (!this._selectedPath) {
                 MessageToast.show("Please select a row");
@@ -43,24 +36,30 @@ sap.ui.define([
             });
         },
 
-        _productDelete: function () {
-            var oModel = this.getView().getModel();
+        // _productDelete: function () {
+        //     var oModel = this.getView().getModel();
 
-            oModel.remove(this._selectedPath, {
-                success: function () {
-                    MessageToast.show("Product deleted successfully");
-                },
-                error: function () {
-                    MessageToast.show("Delete failed");
-                }
-            });
+        //     oModel.remove(this._selectedPath, {
+        //         success: function () {
+        //             MessageToast.show("Product deleted successfully");
+        //         },
+        //         error: function () {
+        //             MessageToast.show("Delete failed");
+        //         }
+        //     });
 
-            this._selectedPath = null;
-        },
-
-        /* ===============================
-           CREATE
-        =============================== */
+        //     this._selectedPath = null;
+        // },
+         _productDelete: function () {
+       var oTable = this.byId("idList");
+       var oModel = this.getView().getModel("product");
+       var aProducts = oModel.getProperty("/Product");
+       var iIndex = parseInt(this._selectedPath.split("/")[2], 10);
+      aProducts.splice(iIndex, 1);
+       oModel.setProperty("/Product", aProducts);
+      sap.m.MessageToast.show("Product deleted successfully");
+       oTable.removeSelections(true);
+},
         onCreateProduct: function () {
             var oView = this.getView();
 
@@ -77,7 +76,10 @@ sap.ui.define([
         },
 
         onCreateConfirm: function () {
-            var oModel = this.getView().getModel();
+           // var oModel = this.getView().getModel();
+           var oModel=this.getView().getModel('product');
+            var aProducts = oModel.getProperty("/Product");
+
 
             var oNewProduct = {
                 ID: this.byId("prodIdInput").getValue(),          // string
@@ -88,27 +90,27 @@ sap.ui.define([
                 Price: this.byId("priceInput").getValue(),       // Decimal → STRING
                 Rating: parseInt(this.byId("ratingInput").getValue(), 10)
             };
+             aProducts.push(oNewProduct);
+            oModel.setProperty('/Product',aProducts);
 
-            oModel.create("/Products", oNewProduct, {
-                success: function () {
-                    MessageToast.show("Product created successfully");
-                    oModel.refresh(true);
-                    this._oCreateDialog.close();
-                }.bind(this),
-                error: function (oError) {
-                    MessageToast.show("Create failed");
-                    console.error(oError);
-                }
-            });
+            // oModel.create("/Products", oNewProduct, {
+            //     success: function () {
+            //         MessageToast.show("Product created successfully");
+            //         oModel.refresh(true);
+            //         this._oCreateDialog.close(); 
+            //     }.bind(this),
+            //     error: function (oError) {
+            //         MessageToast.show("Create failed");
+            //         console.error(oError);
+            //     }
+            // });
         },
 
         onCreateCancel: function () {
             this._oCreateDialog.close();
         },
 
-        /* ===============================
-           UPDATE
-        =============================== */
+     
         onOpenUpdateDialog: function () {
             if (!this._selectedPath) {
                 MessageToast.show("Please select a row");
@@ -116,7 +118,7 @@ sap.ui.define([
             }
 
             var oView = this.getView();
-            var oModel = oView.getModel();
+            var oModel = oView.getModel('product');
 
             if (!this._oUpdateDialog) {
                 this._oUpdateDialog = sap.ui.xmlfragment(
@@ -133,8 +135,8 @@ sap.ui.define([
             this.byId("updProdIdInput").setValue(oData.ID);
             this.byId("updNameInput").setValue(oData.Name);
             this.byId("updDescInput").setValue(oData.Description);
-            this.byId("updReleaseDateInput").setDateValue(oData.ReleaseDate);
-            this.byId("updDiscontinuedDateInput").setDateValue(oData.DiscontinuedDate);
+            this.byId("updReleaseDateInput").setDateValue(oData.ReleaseDate ? new Date(oData.ReleaseDate) : null);
+           this.byId("updDiscontinuedDateInput").setDateValue(oData.DiscontinuedDate ? new Date(oData.DiscontinuedDate) : null);
             this.byId("updPriceInput").setValue(oData.Price);
             this.byId("updRatingInput").setValue(oData.Rating);
 
@@ -142,7 +144,7 @@ sap.ui.define([
         },
 
         onUpdateConfirm: function () {
-            var oModel = this.getView().getModel();
+            var oModel = this.getView().getModel('product');
 
             var oUpdatedData = {
                 Name: this.byId("updNameInput").getValue(),
@@ -152,18 +154,21 @@ sap.ui.define([
                 Price: this.byId("updPriceInput").getValue(), // Decimal as string
                 Rating: parseInt(this.byId("updRatingInput").getValue(), 10)
             };
+             oModel.setProperty(this._selectedPath, oUpdatedData);
 
-            oModel.update(this._selectedPath, oUpdatedData, {
-                success: function () {
-                    MessageToast.show("Product updated successfully");
-                    this._oUpdateDialog.close();
-                    oModel.refresh(true);
-                }.bind(this),
-                error: function (oError) {
-                    MessageToast.show("Update failed");
-                    console.error(oError);
-                }
-            });
+    this._oUpdateDialog.close();
+
+            // oModel.update(this._selectedPath, oUpdatedData, {
+            //     success: function () {
+            //         MessageToast.show("Product updated successfully");
+            //         this._oUpdateDialog.close();
+            //         oModel.refresh(true);
+            //     }.bind(this),
+            //     error: function (oError) {
+            //         MessageToast.show("Update failed");
+            //         console.error(oError);
+            //     }
+            // });
         },
 
         onUpdateCancel: function () {
@@ -175,14 +180,14 @@ sap.ui.define([
 
 
        onSearch: function (oEvent) {
-            var sQuery = oEvent.getSource().getValue();
+            var sQuery = oEvent.getParameter("query");
             var aFilters = [];
 
             if (sQuery) {
                 aFilters.push(new Filter({
                     filters: [
-                        new Filter("ID", FilterOperator.Contains, sQuery),
-                        new Filter("ProductName", FilterOperator.Contains, sQuery)
+                       new Filter("ID", FilterOperator.EQ, parseInt(sQuery, 10)),
+                        new Filter("Name", FilterOperator.Contains, sQuery)
                     ],
                     and: false
                 }));
